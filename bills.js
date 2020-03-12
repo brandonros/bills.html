@@ -663,9 +663,9 @@ document.querySelector('#run').addEventListener('click', function () {
   var end = moment().add(numMonths, 'months').endOf('month')
   var rows = buildRows(input, start, end)
   drawCharts(input, rows)
-  document.querySelector('#dailyBreakdownOutput').innerHTML += drawDailyRows(input, rows);
-  document.querySelector('#statementCalendarOutput').innerHTML += drawStatementCalendar(input.spendings);
-  document.querySelector('#goalsOutput').innerHTML += drawGoalsOutput(input.accounts, input.investments);
+  document.querySelector('#dailyBreakdownOutput').innerHTML = drawDailyRows(input, rows)
+  document.querySelector('#statementCalendarOutput').innerHTML = drawStatementCalendar(input.spendings)
+  document.querySelector('#goalsOutput').innerHTML = drawGoalsOutput(input.accounts, input.investments)
 })
 
 document.querySelector('#input').addEventListener('keyup', () => {
@@ -693,6 +693,5 @@ window.addEventListener('load', function () {
       document.querySelector('#input').dispatchEvent(event)
       document.querySelector('#run').click()
     }
-
   }
 })
