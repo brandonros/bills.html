@@ -1,4 +1,8 @@
-const convertAccountsToBalances = (accounts) => accounts.reduce((prev, account) => Object.assign(prev, { [account.description]: account.balance }), {})
+function convertAccountsToBalances(accounts) {
+  return accounts.reduce(function (prev, account) {
+    return Object.assign(prev, { [account.description]: account.balance })
+  }, {})
+}
 
 function calculateInvestmentsTotalBalance(input, row) {
   return input.accounts.reduce((prev, account) => {
@@ -232,62 +236,6 @@ function buildRows(input, start, end) {
   }
 
   return rows;
-}
-
-function drawDailyFlattenedRows(rows) {
-  var tbodyHtml = '';
-
-  var map = {};
-
-  rows.forEach(function(row) {
-    var key = row.date;
-
-    if (!map[key]) {
-      map[key] = [];
-    }
-
-    map[key].push(row);
-  });
-
-  var previousRow;
-
-  Object.keys(map).forEach(function(key, index) {
-    var lastRowOnDate = map[key][map[key].length - 1];
-
-    var className = '';
-
-    if (previousRow) {
-      if (previousRow.balances.checking === lastRowOnDate.balances.checking) {
-        className = 'bg-warning';
-      } else if (previousRow.balances.checking > lastRowOnDate.balances.checking) {
-        className = 'bg-danger';
-      } else if (previousRow.balances.checking < lastRowOnDate.balances.checking) {
-        className = 'bg-success';
-      }
-    }
-
-    previousRow = lastRowOnDate;
-
-    tbodyHtml += `<tr class="${className}">
-        <td class="distance">${index}</td>
-        <td class="date">${key}</td>
-        <td class="checking">$${lastRowOnDate.balances.checking.toLocaleString()}</td>
-      </tr>`;
-  });
-
-  return `<table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Distance</th>
-        <th>Date</th>
-        <th>Checking</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      ${tbodyHtml}
-    </tbody>
-  </table>`;
 }
 
 function drawDailyRows(input, rows) {
