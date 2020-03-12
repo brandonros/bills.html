@@ -667,3 +667,32 @@ document.querySelector('#run').addEventListener('click', function () {
   document.querySelector('#statementCalendarOutput').innerHTML += drawStatementCalendar(input.spendings);
   document.querySelector('#goalsOutput').innerHTML += drawGoalsOutput(input.accounts, input.investments);
 })
+
+document.querySelector('#input').addEventListener('keyup', () => {
+  var stringifiedInput = btoa(document.querySelector('#input').value)
+  var numMonths = document.querySelector('#numMonths').value
+  document.querySelector('#url').value = `${window.location.protocol}//${window.location.pathname}?input=${stringifiedInput}&numMonths=${numMonths}`
+})
+
+document.querySelector('#numMonths').addEventListener('keyup', () => {
+  var stringifiedInput = btoa(document.querySelector('#input').value)
+  var numMonths = document.querySelector('#numMonths').value
+  document.querySelector('#url').value = `${window.location.protocol}//${window.location.pathname}?input=${stringifiedInput}&numMonths=${numMonths}`
+})
+
+window.addEventListener('load', function () {
+  if (window.location.search) {
+    var searchParams = new URLSearchParams(window.location.search)
+    var input = searchParams.get('input')
+    var numMonths = searchParams.get('numMonths')
+    if (input && numMonths) {
+      document.querySelector('#numMonths').value = numMonths
+      document.querySelector('#input').value = atob(input)
+      var event = document.createEvent('HTMLEvents')
+      event.initEvent('keyup', false, true)
+      document.querySelector('#input').dispatchEvent(event)
+      document.querySelector('#run').click()
+    }
+
+  }
+})
