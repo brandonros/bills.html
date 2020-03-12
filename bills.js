@@ -616,16 +616,25 @@ document.querySelector('#run').addEventListener('click', function () {
   document.querySelector('#goalsOutput').innerHTML = drawGoalsOutput(input.accounts, input.investments, moment(input.dateOfBirth, 'YYYY-MM-DD'), input.yearlyReturnRate)
 })
 
-document.querySelector('#input').addEventListener('keyup', () => {
+document.querySelector('#input').addEventListener('keyup', function () {
   var stringifiedInput = btoa(document.querySelector('#input').value)
   var numMonths = document.querySelector('#numMonths').value
   document.querySelector('#url').value = `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?input=${stringifiedInput}&numMonths=${numMonths}`
 })
 
-document.querySelector('#numMonths').addEventListener('keyup', () => {
+document.querySelector('#numMonths').addEventListener('keyup', function () {
   var stringifiedInput = btoa(document.querySelector('#input').value)
   var numMonths = document.querySelector('#numMonths').value
   document.querySelector('#url').value = `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?input=${stringifiedInput}&numMonths=${numMonths}`
+})
+
+document.querySelector('#copy').addEventListener('click', function () {
+  const element = document.createElement('textarea')
+  element.value = document.querySelector('#url').value
+  document.body.appendChild(element)
+  element.select()
+  document.execCommand('copy')
+  document.body.removeChild(element)
 })
 
 window.addEventListener('load', function () {
