@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="vendor/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet"  href="vendor/c3.min.css" type="text/css">
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="text-center">
+        <div>
+          <label>Input</label>
+          <textarea id="input" class="form-control" style="height: 500px"></textarea>
+        </div>
+
+        <br>
+
+        <div>
+          <label># months</label>
+          <input type="text" id="numMonths" value="3">
+        </div>
+
+        <br>
+
+        <button class="btn btn-default" id="run">Run</button>
+      </div>
+
+      <br>
+
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#charts">Charts</a></li>
+        <li><a data-toggle="tab" href="#dailyCheckingBreakdown">Daily checking breakdown</a></li>
+        <li><a data-toggle="tab" href="#statementCalendar">Statement calendar</a></li>
+        <li><a data-toggle="tab" href="#goals">Goals</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="charts">
+          <div id="checkingChart"></div>
+          <div id="investmentChart"></div>
+          <div id="netWorthChart"></div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="dailyCheckingBreakdown">
+          <div id="dailyBreakdownOutput"></div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="statementCalendar">
+          <div id="statementCalendarOutput"></div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="goals">
+          <div id="goalsOutput"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="vendor/jquery.min.js"></script>
+    <script type="text/javascript" src="vendor/bootstrap.min.js"></script>
+    <script type="text/javascript" src="vendor/moment.min.js"></script>
+    <script type="text/javascript" src="vendor/d3.min.js"></script>
+    <script type="text/javascript" src="vendor/c3.min.js"></script>
+    <script type="text/javascript" src="bills.js"></script>
+  </body>
+</html>
