@@ -394,7 +394,7 @@ function drawStatementCalendar(spendings) {
   }, '');
 }
 
-function calculateGoal(accounts, goal, dateOfBirth) {
+function calculateGoal(accounts, goal, dateOfBirth, yearlyReturnRate) {
   var totalContributed = 0
   var totalGrowth = 0
   var currentBalance = accounts.reduce(function(prev, account) {
@@ -407,7 +407,7 @@ function calculateGoal(accounts, goal, dateOfBirth) {
   var distance = goal - currentBalance
   var today = moment().startOf('day')
   var cursor = today.clone().add(1, 'day')
-  var dailyReturnRate = input.yearlyReturnRate / 365
+  var dailyReturnRate = yearlyReturnRate / 365
   var contributions = []
   while (currentBalance <= goal) {
     var formattedCursor = cursor.format('YYYY-MM-DD')
@@ -486,7 +486,7 @@ function calculateGoal(accounts, goal, dateOfBirth) {
   return {
     date: cursor.format('YYYY-MM-DD'),
     numDays: cursor.diff(today, 'days'),
-    age: cursor.diff(input.dateOfBirth, 'years'),
+    age: cursor.diff(dateOfBirth, 'years'),
     balance: currentBalance,
     contributions,
     distance,
@@ -514,7 +514,7 @@ function determineInvestmentRate(investment) {
   return investment.amount
 }
 
-function drawGoalsOutput(accounts, investments) {
+function drawGoalsOutput(accounts, investments, dateOfBirth, yearlyReturnRate) {
   var accountsWithFrequencyAndRates = accounts.map(function (account) {
     var investment = investments.find(function (investment) {
       return investment.description === account.description
@@ -572,7 +572,7 @@ function drawGoalsOutput(accounts, investments) {
   ]
   var tbodyHtml = ''
   goals.forEach(function (goal) {
-    var result = calculateGoal(accountsWithFrequencyAndRates, goal, moment(input.dateOfBirth, 'YYYY-MM-DD'))
+    var result = calculateGoal(accountsWithFrequencyAndRates, goal, dateOfBirth, yearlyReturnRate)
     if (result.numDays === 1) {
       return
     }
@@ -665,7 +665,7 @@ document.querySelector('#run').addEventListener('click', function () {
   drawCharts(input, rows)
   document.querySelector('#dailyBreakdownOutput').innerHTML = drawDailyRows(input, rows)
   document.querySelector('#statementCalendarOutput').innerHTML = drawStatementCalendar(input.spendings)
-  document.querySelector('#goalsOutput').innerHTML = drawGoalsOutput(input.accounts, input.investments)
+  document.querySelector('#goalsOutput').innerHTML = drawGoalsOutput(input.accounts, input.investments, moment(input.dateOfBirth, 'YYYY-MM-DD'), input.yearlyReturnRate)
 })
 
 document.querySelector('#input').addEventListener('keyup', () => {
