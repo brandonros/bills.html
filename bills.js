@@ -671,13 +671,13 @@ document.querySelector('#run').addEventListener('click', function () {
 document.querySelector('#input').addEventListener('keyup', () => {
   var stringifiedInput = btoa(document.querySelector('#input').value)
   var numMonths = document.querySelector('#numMonths').value
-  document.querySelector('#url').value = `${window.location.protocol}//${window.location.pathname}?input=${stringifiedInput}&numMonths=${numMonths}`
+  document.querySelector('#url').value = `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?input=${stringifiedInput}&numMonths=${numMonths}`
 })
 
 document.querySelector('#numMonths').addEventListener('keyup', () => {
   var stringifiedInput = btoa(document.querySelector('#input').value)
   var numMonths = document.querySelector('#numMonths').value
-  document.querySelector('#url').value = `${window.location.protocol}//${window.location.pathname}?input=${stringifiedInput}&numMonths=${numMonths}`
+  document.querySelector('#url').value = `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?input=${stringifiedInput}&numMonths=${numMonths}`
 })
 
 window.addEventListener('load', function () {
