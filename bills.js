@@ -333,7 +333,7 @@ function calculateDayEndBalances(input, rows, type) {
       if (!dayEndBalances[row.date] || row.balances.checking < dayEndBalances[row.date]) {
         dayEndBalances[row.date] = row.balances.checking;
       }
-    } else if (type === 'investment') {
+    } else if (type === 'investments') {
       var balance = calculateInvestmentsTotalBalance(input, row)
       if (!dayEndBalances[row.date] || balance < dayEndBalances[row.date]) {
         dayEndBalances[row.date] = balance;
@@ -570,12 +570,12 @@ function drawCharts(input, rows) {
     }
   });
   c3.generate({
-    bindto: '#investmentChart',
+    bindto: '#investmentsChart',
     data: {
       x: 'x',
       columns: [
-        ['x'].concat(calculateDayEndBalances(input, rows, 'investment').map(function(row) { return row.date })),
-        ['investments'].concat(calculateDayEndBalances(input, rows, 'investment').map(function(row) { return row.balance }))
+        ['x'].concat(calculateDayEndBalances(input, rows, 'investments').map(function(row) { return row.date })),
+        ['investments'].concat(calculateDayEndBalances(input, rows, 'investments').map(function(row) { return row.balance }))
       ]
     },
     axis: {
@@ -607,12 +607,84 @@ function drawCharts(input, rows) {
   });
 }
 
+function drawMonthlyTotals(input) {
+  var totalMonthlyIncome = Math.round(input.incomes.reduce(function (prev, income) {
+    if (income.daysOfMonth) {
+      return prev + (income.amount * income.daysOfMonth.length)
+    } else if (income.dayOfWeekName) {
+      return prev + (income.amount * 4.33) // 4.33 weeks in a month
+    } else if (income.dayOfMonth) {
+      return prev + income.amount
+    } else {
+      throw new Error('Unknown income frequency')
+    }
+  }, 0))
+  var totalMonthlyInvestmentContributions = Math.round(input.investments.reduce(function (prev, investment) {
+    if (investment.daysOfMonth) {
+      return prev + (investment.amount * investment.daysOfMonth.length)
+    } else if (investment.dayOfWeekName) {
+      return prev + (investment.amount * 4.33) // 4.33 weeks in a month
+    } else if (investment.dayOfMonth) {
+      return prev + investment.amount
+    } else {
+      throw new Error('Unknown investment frequency')
+    }
+  }, 0))
+  var totalMonthlyInvestmentMatch = Math.round(input.investments.reduce(function (prev, investment) {
+    if (!investment.match) {
+      return prev
+    }
+    if (investment.daysOfMonth) {
+      return prev + (investment.match * investment.daysOfMonth.length)
+    } else if (investment.dayOfWeekName) {
+      return prev + (investment.match * 4.33) // 4.33 weeks in a month
+    } else if (investment.dayOfMonth) {
+      return prev + investment.match
+    } else {
+      throw new Error('Unknown investment frequency')
+    }
+  }, 0))
+  var totalMonthlySpending = Math.round(input.spendings.reduce(function (prev, spending) {
+    if (spending.daysOfMonth) {
+      return prev + (spending.amount * spending.daysOfMonth.length)
+    } else if (spending.dayOfWeekName) {
+      return prev + (spending.amount * 4.33) // 4.33 weeks in a month
+    } else if (spending.dayOfMonth) {
+      return prev + spending.amount
+    } else {
+      throw new Error('Unknown spending frequency')
+    }
+  }, 0))
+  var totalMonthlySavings = totalMonthlyIncome - totalMonthlyInvestmentContributions - totalMonthlySpending
+  document.querySelector('#totalMonthlyIncome').innerHTML = `total monthly income: \$${totalMonthlySpending.toLocaleString()}`
+  document.querySelector('#totalMonthlyInvestmentContributions').innerHTML = `total investment contributions: \$${totalMonthlyInvestmentContributions.toLocaleString()}`
+  document.querySelector('#totalMonthlyInvestmentMatch').innerHTML = `total investment match: \$${totalMonthlyInvestmentMatch.toLocaleString()}`
+  document.querySelector('#totalMonthlySpending').innerHTML = `total monthly spending: \$${totalMonthlySpending.toLocaleString()}`
+  document.querySelector('#totalMonthlySavings').innerHTML = `total monthly savings: \$${totalMonthlySavings.toLocaleString()}`
+}
+
+function drawAverageMonthlyDifferences(input, numMonths, rows) {
+  var firstRow = rows[0]
+  var lastRow = rows[rows.length - 1]
+  var checkingDifference = lastRow.balances.checking - firstRow.balances.checking
+  var investmentsDifference = calculateInvestmentsTotalBalance(input, lastRow) - calculateInvestmentsTotalBalance(input, firstRow)
+  var netWorthDifference = checkingDifference + investmentsDifference
+  var monthlyCheckingDifference = Math.round(checkingDifference / numMonths)
+  var monthlyInvestmentsDifference = Math.round(investmentsDifference / numMonths)
+  var monthlyNetWorthDifference = Math.round(netWorthDifference / numMonths)
+  document.querySelector('#monthlyCheckingDifference').innerHTML = `average monthly difference: \$${monthlyCheckingDifference.toLocaleString()}`
+  document.querySelector('#monthlyInvestmentsDifference').innerHTML = `average monthly difference: \$${monthlyInvestmentsDifference.toLocaleString()}`
+  document.querySelector('#monthlyNetWorthDifference').innerHTML = `average monthly difference: \$${monthlyNetWorthDifference.toLocaleString()}`
+}
+
 document.querySelector('#run').addEventListener('click', function () {
   var input = eval(`(${document.querySelector('#input').value})`)
   var numMonths = parseInt(document.querySelector('#numMonths').value)
   var start = moment().startOf('day')
   var end = moment().add(numMonths, 'months').endOf('month')
   var rows = buildRows(input, start, end)
+  drawMonthlyTotals(input)
+  drawAverageMonthlyDifferences(input, numMonths, rows)
   drawCharts(input, rows)
   document.querySelector('#dailyBreakdownOutput').innerHTML = drawDailyRows(input, rows)
   document.querySelector('#statementCalendarOutput').innerHTML = drawStatementCalendar(input)
