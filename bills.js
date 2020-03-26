@@ -656,7 +656,7 @@ function drawMonthlyTotals(input) {
     }
   }, 0))
   var totalMonthlySavings = totalMonthlyIncome - totalMonthlyInvestmentContributions - totalMonthlySpending
-  document.querySelector('#totalMonthlyIncome').innerHTML = `total monthly income: \$${totalMonthlySpending.toLocaleString()}`
+  document.querySelector('#totalMonthlyIncome').innerHTML = `total monthly income: \$${totalMonthlyIncome.toLocaleString()}`
   document.querySelector('#totalMonthlyInvestmentContributions').innerHTML = `total investment contributions: \$${totalMonthlyInvestmentContributions.toLocaleString()}`
   document.querySelector('#totalMonthlyInvestmentMatch').innerHTML = `total investment match: \$${totalMonthlyInvestmentMatch.toLocaleString()}`
   document.querySelector('#totalMonthlySpending').innerHTML = `total monthly spending: \$${totalMonthlySpending.toLocaleString()}`
