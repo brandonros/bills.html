@@ -1,3 +1,47 @@
+var goals = [
+  45000,
+  50000,
+  55000,
+  60000,
+  65000,
+  70000,
+  75000,
+  80000,
+  85000,
+  90000,
+  95000,
+  100000,
+  125000,
+  150000,
+  175000,
+  200000,
+  225000,
+  250000,
+  275000,
+  300000,
+  325000,
+  350000,
+  375000,
+  400000,
+  425000,
+  450000,
+  475000,
+  500000,
+  550000,
+  600000,
+  650000,
+  700000,
+  750000,
+  800000,
+  850000,
+  900000,
+  950000,
+  1000000,
+  2000000,
+  5000000,
+  10000000
+]
+
 function convertAccountsToBalances(accounts) {
   return accounts.reduce(function (prev, account) {
     return Object.assign(prev, { [account.description]: account.balance })
@@ -323,7 +367,8 @@ function calculateDayEndBalances(input, rows, type) {
   return mappedRows
 }
 
-function drawStatementCalendar(spendings) {
+function drawStatementCalendar(input) {
+  var spendings = input.spendings
   var spendingsWithStatements = spendings.filter(function(spending) { return spending.statementStart });
   return spendingsWithStatements.reduce(function (prev, spending) {
     var daysIn = moment().diff(moment(spending.statementStart, 'YYYY-MM-DD'), 'days') + 1
@@ -346,10 +391,10 @@ function calculateGoal(accounts, goal, dateOfBirth, yearlyReturnRate) {
   var totalContributed = 0
   var totalGrowth = 0
   var currentBalance = accounts.reduce(function(prev, account) {
-    if (account.type !== 'investment') {
-      return prev
+    if (account.type === 'investment') {
+      return prev + account.balance
     }
-    return prev + account.balance
+    return prev
   }, 0)
   var startingBalance = currentBalance
   var distance = goal - currentBalance
@@ -462,7 +507,8 @@ function determineInvestmentRate(investment) {
   return investment.amount
 }
 
-function drawGoalsOutput(accounts, investments, dateOfBirth, yearlyReturnRate) {
+function drawInvestmentGoalsOutput(input) {
+  var { accounts, investments, dateOfBirth, yearlyReturnRate } = input
   var accountsWithFrequencyAndRates = accounts.map(function (account) {
     var investment = investments.find(function (investment) {
       return investment.description === account.description
@@ -475,52 +521,9 @@ function drawGoalsOutput(accounts, investments, dateOfBirth, yearlyReturnRate) {
       rate: determineInvestmentRate(investment)
     })
   })
-  var goals = [
-    45000,
-    50000,
-    55000,
-    60000,
-    65000,
-    70000,
-    75000,
-    80000,
-    85000,
-    90000,
-    95000,
-    100000,
-    125000,
-    150000,
-    175000,
-    200000,
-    225000,
-    250000,
-    275000,
-    300000,
-    325000,
-    350000,
-    375000,
-    400000,
-    425000,
-    450000,
-    475000,
-    500000,
-    550000,
-    600000,
-    650000,
-    700000,
-    750000,
-    800000,
-    850000,
-    900000,
-    950000,
-    1000000,
-    2000000,
-    5000000,
-    10000000
-  ]
   var tbodyHtml = ''
   goals.forEach(function (goal) {
-    var result = calculateGoal(accountsWithFrequencyAndRates, goal, dateOfBirth, yearlyReturnRate)
+    var result = calculateGoal(accountsWithFrequencyAndRates, goal, moment(dateOfBirth, 'YYYY-MM-DD'), yearlyReturnRate)
     if (result.numDays === 1) {
       return
     }
@@ -612,8 +615,8 @@ document.querySelector('#run').addEventListener('click', function () {
   var rows = buildRows(input, start, end)
   drawCharts(input, rows)
   document.querySelector('#dailyBreakdownOutput').innerHTML = drawDailyRows(input, rows)
-  document.querySelector('#statementCalendarOutput').innerHTML = drawStatementCalendar(input.spendings)
-  document.querySelector('#goalsOutput').innerHTML = drawGoalsOutput(input.accounts, input.investments, moment(input.dateOfBirth, 'YYYY-MM-DD'), input.yearlyReturnRate)
+  document.querySelector('#statementCalendarOutput').innerHTML = drawStatementCalendar(input)
+  document.querySelector('#investmentGoalsOutput').innerHTML = drawInvestmentGoalsOutput(input)
 })
 
 document.querySelector('#input').addEventListener('keyup', function () {
