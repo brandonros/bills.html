@@ -371,18 +371,29 @@ function drawStatementCalendar(input) {
   var spendings = input.spendings
   var spendingsWithStatements = spendings.filter(function(spending) { return spending.statementStart });
   return spendingsWithStatements.reduce(function (prev, spending) {
+    var statementSize = moment(spending.statementEnd, 'YYYY-MM-DD').diff(moment(spending.statementStart, 'YYYY-MM-DD'), 'days') + 1
     var daysIn = moment().diff(moment(spending.statementStart, 'YYYY-MM-DD'), 'days') + 1
     var daysTillClose = moment(spending.statementEnd, 'YYYY-MM-DD').diff(moment(), 'days') + 1
-    var projected = Math.floor(spending.balance / daysIn * 30)
+    var dailySpending = Math.floor(spending.balance / daysIn)
+    var projected = Math.floor(spending.balance / daysIn * statementSize)
     var target = spending.amount
+    var targetDailySpending = Math.floor(target / statementSize)
     var difference = target - projected
     var differenceVerbiage = difference > 0 ? 'under' : 'over'
     return prev + `
       <div>
-        ${spending.description}<br>
-        start: ${spending.statementStart} end: ${spending.statementEnd}<br>
-        ${daysIn} day(s) in, ${daysTillClose} day(s) till close<br>
-        $${spending.balance.toLocaleString()} current balance, $${projected.toLocaleString()} projected total, $${target.toLocaleString()} target total, $${difference.toLocaleString()} ${differenceVerbiage}
+        <strong>${spending.description}</strong><br>
+        start: ${spending.statementStart}<br>
+        end: ${spending.statementEnd}<br>
+        size: ${statementSize} days<br>
+        ${daysIn} day(s) in to statement<br>
+        ${daysTillClose} day(s) till statement close<br>
+        $${spending.balance.toLocaleString()} current balance<br>
+        $${dailySpending.toLocaleString()} current average daily spend<br>
+        $${projected.toLocaleString()} projected end-of-statement balance<br>
+        $${target.toLocaleString()} target end-of-statement balance<br>
+        $${targetDailySpending.toLocaleString()} target daily spend<br>
+        projected statement end: $${difference.toLocaleString()} ${differenceVerbiage}
       </div>`
   }, '');
 }
