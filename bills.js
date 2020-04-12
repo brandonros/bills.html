@@ -375,25 +375,41 @@ function drawStatementCalendar(input) {
     var daysIn = moment().diff(moment(spending.statementStart, 'YYYY-MM-DD'), 'days') + 1
     var daysTillClose = moment(spending.statementEnd, 'YYYY-MM-DD').diff(moment(), 'days') + 1
     var dailySpending = Math.floor(spending.balance / daysIn)
-    var projected = Math.floor(spending.balance / daysIn * statementSize)
-    var target = spending.amount
-    var targetDailySpending = Math.floor(target / statementSize)
-    var difference = target - projected
-    var differenceVerbiage = difference > 0 ? 'under' : 'over'
+    var weeklySpending = dailySpending * 7
+    var targetMonthlySpending = spending.amount
+    var targetDailySpending = Math.floor(targetMonthlySpending / statementSize)
+    var targetWeeklySpending = targetDailySpending * 7
+    var dailySpendingDifference = Math.floor(targetDailySpending - dailySpending)
+    var dailySpendingDifferenceVerbiage = dailySpendingDifference > 0 ? 'under' : 'over'
+    var weeklySpendingDifference = Math.floor(targetWeeklySpending - weeklySpending)
+    var weeklySpendingDifferenceVerbiage = weeklySpendingDifference > 0 ? 'under' : 'over'
+    var projectedMonthlySpending = Math.floor(spending.balance / daysIn * statementSize)
+    var monthlySpendingDifference = targetMonthlySpending - projectedMonthlySpending
+    var monthlySpendingDifferenceVerbiage = monthlySpendingDifference > 0 ? 'under' : 'over'
     return prev + `
       <div>
         <strong>${spending.description}</strong><br>
         start: ${spending.statementStart}<br>
         end: ${spending.statementEnd}<br>
         size: ${statementSize} days<br>
-        ${daysIn} day(s) in to statement<br>
-        ${daysTillClose} day(s) till statement close<br>
+        ${daysIn} day(s) in<br>
+        ${daysTillClose} day(s) till close<br>
         $${spending.balance.toLocaleString()} current balance<br>
-        $${dailySpending.toLocaleString()} current average daily spend<br>
-        $${projected.toLocaleString()} projected end-of-statement balance<br>
-        $${target.toLocaleString()} target end-of-statement balance<br>
-        $${targetDailySpending.toLocaleString()} target daily spend<br>
-        projected statement end: $${difference.toLocaleString()} ${differenceVerbiage}
+        <br>
+        <strong>spending targets</strong><br>
+        $${targetDailySpending.toLocaleString()}/day<br>
+        $${targetWeeklySpending.toLocaleString()}/wk<br>
+        $${targetMonthlySpending.toLocaleString()}/mo<br>
+        <br>
+        <strong>current projected spending</strong><br>
+        $${dailySpending.toLocaleString()}/day<br>
+        $${weeklySpending.toLocaleString()}/wk<br>
+        $${projectedMonthlySpending.toLocaleString()}/mo<br>
+        <br>
+        <strong>projected vs target</strong><br>
+        $${dailySpendingDifference.toLocaleString()}/day ${dailySpendingDifferenceVerbiage}<br>
+        $${weeklySpendingDifference.toLocaleString()}/wk ${weeklySpendingDifferenceVerbiage}<br>
+        $${monthlySpendingDifference.toLocaleString()}/mo ${monthlySpendingDifferenceVerbiage}
       </div>`
   }, '');
 }
