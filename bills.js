@@ -375,18 +375,18 @@ function drawStatementCalendar(input) {
     var daysIn = moment().diff(moment(spending.statementStart, 'YYYY-MM-DD'), 'days') + 1
     var daysTillClose = moment(spending.statementEnd, 'YYYY-MM-DD').diff(moment(), 'days') + 1
     var dailySpending = Math.floor(spending.balance / daysIn)
-    var weeklySpending = dailySpending * 7
     var targetMonthlySpending = spending.amount
     var targetDailySpending = Math.floor(targetMonthlySpending / statementSize)
     var currentTargetSpending = targetDailySpending * daysIn
     var currentSpendingDifference = (targetDailySpending * daysIn) - spending.balance
     var currentSpendingDifferenceVerbiage = currentSpendingDifference > 0 ? 'under' : 'over'
-    var targetWeeklySpending = targetDailySpending * 7
     var dailySpendingDifference = Math.floor(targetDailySpending - dailySpending)
     var dailySpendingDifferenceVerbiage = dailySpendingDifference > 0 ? 'under' : 'over'
+    var weeklySpending = dailySpending * 7
+    var targetWeeklySpending = targetDailySpending * 7
     var weeklySpendingDifference = Math.floor(targetWeeklySpending - weeklySpending)
     var weeklySpendingDifferenceVerbiage = weeklySpendingDifference > 0 ? 'under' : 'over'
-    var projectedMonthlySpending = Math.floor(spending.balance / daysIn * statementSize)
+    var projectedMonthlySpending = Math.floor(dailySpending * statementSize)
     var monthlySpendingDifference = targetMonthlySpending - projectedMonthlySpending
     var monthlySpendingDifferenceVerbiage = monthlySpendingDifference > 0 ? 'under' : 'over'
     return prev + `
@@ -395,8 +395,10 @@ function drawStatementCalendar(input) {
         start: ${spending.statementStart}<br>
         end: ${spending.statementEnd}<br>
         size: ${statementSize} days<br>
+        <br>
         ${daysIn} day(s) in<br>
         ${daysTillClose} day(s) till close<br>
+        <br>
         $${spending.balance.toLocaleString()} current balance<br>
         $${currentTargetSpending.toLocaleString()} current balance target<br>
         $${currentSpendingDifference.toLocaleString()} ${currentSpendingDifferenceVerbiage} target<br>
