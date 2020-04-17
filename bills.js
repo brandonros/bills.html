@@ -379,7 +379,7 @@ function drawStatementCalendar(input) {
     var targetMonthlySpending = spending.amount
     var targetDailySpending = Math.floor(targetMonthlySpending / statementSize)
     var currentTargetSpending = targetDailySpending * daysIn
-    var currentSpendingDifference = (targetDailySpending * daysIn) - (dailySpending * daysIn)
+    var currentSpendingDifference = (targetDailySpending * daysIn) - spending.balance
     var currentSpendingDifferenceVerbiage = currentSpendingDifference > 0 ? 'under' : 'over'
     var targetWeeklySpending = targetDailySpending * 7
     var dailySpendingDifference = Math.floor(targetDailySpending - dailySpending)
