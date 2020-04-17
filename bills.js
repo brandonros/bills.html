@@ -378,6 +378,7 @@ function drawStatementCalendar(input) {
     var weeklySpending = dailySpending * 7
     var targetMonthlySpending = spending.amount
     var targetDailySpending = Math.floor(targetMonthlySpending / statementSize)
+    var currentTargetSpending = targetDailySpending * daysIn
     var currentSpendingDifference = (targetDailySpending * daysIn) - (dailySpending * daysIn)
     var currentSpendingDifferenceVerbiage = currentSpendingDifference > 0 ? 'under' : 'over'
     var targetWeeklySpending = targetDailySpending * 7
@@ -397,6 +398,7 @@ function drawStatementCalendar(input) {
         ${daysIn} day(s) in<br>
         ${daysTillClose} day(s) till close<br>
         $${spending.balance.toLocaleString()} current balance<br>
+        $${currentTargetSpending.toLocaleString()} current balance target<br>
         $${currentSpendingDifference.toLocaleString()} ${currentSpendingDifferenceVerbiage} target<br>
         <br>
         <strong>spending targets</strong><br>
