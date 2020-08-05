@@ -600,7 +600,10 @@ function drawInvestmentExposureOutput(input) {
   })
   var html = ''
   Object.keys(tickers).forEach(function (key) {
-    html += `<div>${key}: ${expsoureMap[key]}</div>`
+    var tickerAmount = tickers[key]
+    var exposureAmount = expsoureMap[key]
+    var numShares = exposureAmount / tickerAmount
+    html += `<div>${key}: \$${exposureAmount.toLocaleString()} (${numShares.toFixed(2)} @ \$${tickerAmount.toLocaleString()})</div>`
   })
   return html
 }
