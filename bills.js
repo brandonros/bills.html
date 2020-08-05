@@ -585,6 +585,26 @@ function drawInvestmentGoalsOutput(input) {
   </table>`
 }
 
+function drawInvestmentExposureOutput(input) {
+  var { tickers, accounts } = input
+  var matchingAccounts = accounts.filter(function (account) {
+    return account.ticker
+  })
+  var expsoureMap = {}
+  matchingAccounts.forEach(function (account) {
+    var ticker = account.ticker
+    if (!expsoureMap[ticker]) {
+      expsoureMap[ticker] = 0
+    }
+    expsoureMap[ticker] += account.balance
+  })
+  var html = ''
+  Object.keys(tickers).forEach(function (key) {
+    html += `<div>${key}: ${expsoureMap[key]}</div>`
+  })
+  return html
+}
+
 function drawCharts(input, rows) {
   c3.generate({
     bindto: '#checkingChart',
@@ -724,6 +744,7 @@ document.querySelector('#run').addEventListener('click', function () {
   document.querySelector('#dailyBreakdownOutput').innerHTML = drawDailyRows(input, rows)
   document.querySelector('#statementCalendarOutput').innerHTML = drawStatementCalendar(input)
   document.querySelector('#investmentGoalsOutput').innerHTML = drawInvestmentGoalsOutput(input)
+  document.querySelector('#investmentExposureOutput').innerHTML = drawInvestmentExposureOutput(input)
 })
 
 document.querySelector('#input').addEventListener('keyup', function () {
