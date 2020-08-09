@@ -603,7 +603,7 @@ function drawInvestmentExposureOutput(input) {
     var tickerAmount = tickers[key]
     var exposureAmount = expsoureMap[key]
     var numShares = exposureAmount / tickerAmount
-    html += `<div>${key}: \$${exposureAmount.toLocaleString()} (${numShares.toFixed(2)} @ \$${tickerAmount.toLocaleString()})</div>`
+    html += `<div>${key}: \$${exposureAmount.toLocaleString()} (${numShares.toFixed(2)} shares @ \$${tickerAmount.toLocaleString()})</div>`
   })
   return html
 }
