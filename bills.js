@@ -787,6 +787,6 @@ window.addEventListener('load', function () {
   }
 })
 
-window.addEventListener('onbeforeunload', function () {
+window.addEventListener('beforeunload', function () {
   return 'Are you sure you want to leave?'
 })
